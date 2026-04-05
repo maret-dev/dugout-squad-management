@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{team.list} + ' - ' + #{app.name}">My Teams - Dugout</title>
+</head>
+<body>
+    <div th:replace="~{layout/base :: *}">
+        <div th:fragment="content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 th:text="#{team.list}">My Teams</h2>
+                <a th:href="@{/teams/create}" class="btn text-white"
+                   style="background-color: var(--color-primary);"
+                   th:text="#{team.create}">Create Team</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(teams)}" class="alert alert-info">
+                <span th:text="#{team.noTeams}">You have no teams yet.</span>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(teams)}" class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:text="#{team.name}">Team Name</th>
+                            <th th:text="#{team.season}">Season</th>
+                            <th th:text="#{common.actions}">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="team : ${teams}">
+                            <td>
+                                <a th:href="@{/teams/{id}(id=${team.id})}" th:text="${team.name}">Team</a>
+                            </td>
+                            <td th:text="${team.season}">2024-2025</td>
+                            <td>
+                                <a th:href="@{/teams/{id}/edit(id=${team.id})}"
+                                   class="btn btn-sm btn-outline-secondary" th:text="#{team.edit}">Edit</a>
+                                <form th:action="@{/teams/{id}/delete(id=${team.id})}" method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            th:text="#{team.delete}">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
