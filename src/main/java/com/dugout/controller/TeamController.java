@@ -1,6 +1,7 @@
 package com.dugout.controller;
 
 import com.dugout.model.Team;
+import com.dugout.service.PlayerService;
 import com.dugout.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TeamController {
 
     private final TeamService teamService;
+    private final PlayerService playerService;
 
     @GetMapping
     public String list(Model model) {
@@ -39,6 +41,7 @@ public class TeamController {
     public String detail(@PathVariable Long id, Model model) {
         Team team = teamService.getTeamForCurrentCoach(id);
         model.addAttribute("team", team);
+        model.addAttribute("players", playerService.getActivePlayers(id));
         return "teams/detail";
     }
 

@@ -20,7 +20,51 @@
                 </div>
             </div>
             <hr>
-            <p class="text-muted">Players, events, and attendance grid will appear here.</p>
+
+            <!-- Players Section -->
+            <h4 th:text="#{team.players}">Players</h4>
+
+            <form th:action="@{/teams/{id}/players/add(id=${team.id})}" method="post" class="row g-2 mb-3">
+                <div class="col-auto">
+                    <input type="text" class="form-control" name="firstName"
+                           th:placeholder="#{player.firstName}" required>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" name="lastName"
+                           th:placeholder="#{player.lastName}" required>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn text-white" style="background-color: var(--color-secondary);"
+                            th:text="#{player.add}">Add Player</button>
+                </div>
+            </form>
+
+            <div th:if="${#lists.isEmpty(players)}" class="text-muted mb-3">
+                No players yet.
+            </div>
+
+            <table th:unless="${#lists.isEmpty(players)}" class="table table-sm table-hover mb-4">
+                <thead class="table-light">
+                    <tr>
+                        <th th:text="#{player.firstName}">First Name</th>
+                        <th th:text="#{player.lastName}">Last Name</th>
+                        <th th:text="#{common.actions}">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="player : ${players}">
+                        <td th:text="${player.firstName}">John</td>
+                        <td th:text="${player.lastName}">Doe</td>
+                        <td>
+                            <form th:action="@{/teams/{tid}/players/{pid}/remove(tid=${team.id}, pid=${player.id})}"
+                                  method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        th:text="#{player.remove}">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
