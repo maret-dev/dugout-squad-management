@@ -1,6 +1,7 @@
 package com.dugout.controller;
 
 import com.dugout.model.Team;
+import com.dugout.service.AttendanceService;
 import com.dugout.service.EventService;
 import com.dugout.service.PlayerService;
 import com.dugout.service.TeamService;
@@ -18,6 +19,7 @@ public class TeamController {
     private final TeamService teamService;
     private final PlayerService playerService;
     private final EventService eventService;
+    private final AttendanceService attendanceService;
 
     @GetMapping
     public String list(Model model) {
@@ -45,6 +47,7 @@ public class TeamController {
         model.addAttribute("team", team);
         model.addAttribute("players", playerService.getActivePlayers(id));
         model.addAttribute("events", eventService.getEventsForTeam(id));
+        model.addAttribute("grid", attendanceService.getAttendanceGrid(id));
         return "teams/detail";
     }
 

@@ -9,3 +9,26 @@
     --color-text: #212529;
     --color-muted: #6c757d;
 }
+
+/* Attendance grid */
+.attendance-grid .header-training {
+    background-color: var(--color-training);
+}
+
+.attendance-grid .header-match {
+    background-color: var(--color-match);
+}
+
+.attendance-grid .cell-present {
+    background-color: var(--color-present);
+}
+
+.attendance-grid .cell-absent {
+    background-color: var(--color-absent);
+}
+
+.attendance-cell {
+    user-select: none;
+    font-weight: bold;
+    font-size: 0.85rem;
+}

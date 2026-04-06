@@ -19,6 +19,49 @@
                        th:text="#{common.back}">Back</a>
                 </div>
             </div>
+
+            <!-- Attendance Grid -->
+            <div th:if="${not #lists.isEmpty(grid.events) and not #lists.isEmpty(grid.playerRows)}" class="mb-4">
+                <h4 th:text="#{attendance.save}">Attendance</h4>
+                <form th:action="@{/teams/{id}/attendance(id=${team.id})}" method="post">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm text-center attendance-grid">
+                            <thead>
+                                <tr>
+                                    <th class="text-start" style="min-width: 150px;">Player</th>
+                                    <th th:each="event : ${grid.events}"
+                                        th:classappend="${event.type.name() == 'TRAINING'} ? 'header-training' : 'header-match'"
+                                        style="min-width: 45px; font-size: 0.8rem;">
+                                        <div th:text="${#temporals.format(event.date, 'dd/MM')}">01/01</div>
+                                        <small th:text="${event.type.name() == 'TRAINING'} ? 'T' : 'M'">T</small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="row : ${grid.playerRows}">
+                                    <td class="text-start fw-bold"
+                                        th:text="${row.player.lastName} + ' ' + ${row.player.firstName}">Player Name</td>
+                                    <td th:each="event : ${grid.events}"
+                                        class="attendance-cell"
+                                        th:classappend="${row.attendanceMap.containsKey(event.id) and row.attendanceMap.get(event.id)} ? 'cell-present' : 'cell-absent'"
+                                        th:data-player="${row.player.id}"
+                                        th:data-event="${event.id}"
+                                        style="cursor: pointer;">
+                                        <input type="hidden"
+                                               th:name="'att_' + ${row.player.id} + '_' + ${event.id}"
+                                               th:value="${row.attendanceMap.containsKey(event.id) and row.attendanceMap.get(event.id)} ? 'true' : 'false'">
+                                        <span class="cell-label"
+                                              th:text="${row.attendanceMap.containsKey(event.id) and row.attendanceMap.get(event.id)} ? 'P' : 'A'">A</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="submit" class="btn text-white mt-2" style="background-color: var(--color-primary);"
+                            th:text="#{attendance.save}">Save Attendance</button>
+                </form>
+            </div>
+
             <hr>
 
             <!-- Players Section -->
