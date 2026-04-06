@@ -32,3 +32,14 @@
     font-weight: bold;
     font-size: 0.85rem;
 }
+
+.stats-column {
+    font-weight: bold;
+    background-color: #f0f0f0;
+    border-left: 2px solid #dee2e6;
+    font-size: 0.85rem;
+}
+
+.low-attendance {
+    background-color: var(--color-warning) !important;
+}

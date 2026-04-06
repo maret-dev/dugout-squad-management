@@ -4,6 +4,7 @@ import com.dugout.model.Team;
 import com.dugout.service.AttendanceService;
 import com.dugout.service.EventService;
 import com.dugout.service.PlayerService;
+import com.dugout.service.StatisticsService;
 import com.dugout.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ public class TeamController {
     private final PlayerService playerService;
     private final EventService eventService;
     private final AttendanceService attendanceService;
+    private final StatisticsService statisticsService;
 
     @GetMapping
     public String list(Model model) {
@@ -48,6 +50,7 @@ public class TeamController {
         model.addAttribute("players", playerService.getActivePlayers(id));
         model.addAttribute("events", eventService.getEventsForTeam(id));
         model.addAttribute("grid", attendanceService.getAttendanceGrid(id));
+        model.addAttribute("stats", statisticsService.getTeamStats(id));
         return "teams/detail";
     }
 
