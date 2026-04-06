@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{admin.coaches} + ' - ' + #{app.name}">Coaches - Dugout</title>
+</head>
+<body>
+    <div th:replace="~{layout/base :: *}">
+        <div th:fragment="content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 th:text="#{admin.coaches}">Coaches</h2>
+                <a th:href="@{/admin/coaches/create}" class="btn text-white"
+                   style="background-color: var(--color-primary);"
+                   th:text="#{admin.createCoach}">Create Coach</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:text="#{auth.username}">Username</th>
+                            <th>Full Name</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th th:text="#{common.actions}">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="coach : ${coaches}">
+                            <td th:text="${coach.username}">admin</td>
+                            <td th:text="${coach.fullName}">Admin</td>
+                            <td><span class="badge bg-secondary" th:text="${coach.role}">ADMIN</span></td>
+                            <td>
+                                <span th:if="${coach.enabled}" class="badge bg-success">Enabled</span>
+                                <span th:unless="${coach.enabled}" class="badge bg-danger">Disabled</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/coaches/{id}/toggle(id=${coach.id})}" method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm"
+                                            th:classappend="${coach.enabled} ? 'btn-outline-warning' : 'btn-outline-success'"
+                                            th:text="${coach.enabled} ? #{admin.disableCoach} : #{admin.enableCoach}">Toggle</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
