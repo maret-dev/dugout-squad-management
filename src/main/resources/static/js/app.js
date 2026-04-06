@@ -1,6 +1,7 @@
 // Dugout - Main JavaScript
 
 document.addEventListener('DOMContentLoaded', function () {
+
     // Attendance grid toggle
     document.querySelectorAll('.attendance-cell').forEach(function (cell) {
         cell.addEventListener('click', function () {
@@ -13,6 +14,23 @@ document.addEventListener('DOMContentLoaded', function () {
             label.textContent = isPresent ? 'A' : 'P';
             cell.classList.toggle('cell-present', !isPresent);
             cell.classList.toggle('cell-absent', isPresent);
+        });
+    });
+
+    // Flash message auto-dismiss (4 seconds)
+    document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
+        setTimeout(function () {
+            var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert.close();
+        }, 4000);
+    });
+
+    // Confirm dialog for destructive actions
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if (!confirm(form.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
         });
     });
 });
