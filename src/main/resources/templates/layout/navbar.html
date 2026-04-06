@@ -18,6 +18,13 @@
                 </li>
             </ul>
             <ul class="navbar-nav" sec:authorize="isAuthenticated()">
+                <li class="nav-item me-2">
+                    <span class="nav-link">
+                        <a th:href="@{''(lang=en)}" class="text-light text-decoration-none">EN</a>
+                        <span class="text-light">|</span>
+                        <a th:href="@{''(lang=it)}" class="text-light text-decoration-none">IT</a>
+                    </span>
+                </li>
                 <li class="nav-item">
                     <span class="nav-link text-light" sec:authentication="name">User</span>
                 </li>
