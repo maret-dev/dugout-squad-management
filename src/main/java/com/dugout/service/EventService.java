@@ -1,9 +1,6 @@
 package com.dugout.service;
 
-import com.dugout.model.Attendance;
-import com.dugout.model.Event;
-import com.dugout.model.Player;
-import com.dugout.model.Team;
+import com.dugout.model.*;
 import com.dugout.repository.AttendanceRepository;
 import com.dugout.repository.EventRepository;
 import com.dugout.repository.PlayerRepository;
@@ -12,36 +9,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PlayerService {
+public class EventService {
 
-    private final PlayerRepository playerRepository;
     private final EventRepository eventRepository;
     private final AttendanceRepository attendanceRepository;
+    private final PlayerRepository playerRepository;
     private final TeamService teamService;
 
-    public List<Player> getActivePlayers(Long teamId) {
+    public List<Event> getEventsForTeam(Long teamId) {
         teamService.getTeamForCurrentCoach(teamId);
-        return playerRepository.findByTeamIdAndActiveTrue(teamId);
+        return eventRepository.findByTeamIdOrderByDateAsc(teamId);
     }
 
-    public Player addPlayer(Long teamId, String firstName, String lastName) {
+    public Event addEvent(Long teamId, EventType type, LocalDate date, String notes) {
         Team team = teamService.getTeamForCurrentCoach(teamId);
-        Player player = Player.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .team(team)
-                .active(true)
-                .build();
-        player = playerRepository.save(player);
 
-        // Create attendance records for all existing events (default absent)
-        List<Event> events = eventRepository.findByTeamIdOrderByDateAsc(teamId);
-        for (Event event : events) {
+        Event event = Event.builder()
+                .type(type)
+                .date(date)
+                .notes(notes)
+                .team(team)
+                .build();
+        event = eventRepository.save(event);
+
+        // Create attendance records for all active players (default absent)
+        List<Player> activePlayers = playerRepository.findByTeamIdAndActiveTrue(teamId);
+        for (Player player : activePlayers) {
             Attendance attendance = Attendance.builder()
                     .player(player)
                     .event(event)
@@ -50,13 +49,13 @@ public class PlayerService {
             attendanceRepository.save(attendance);
         }
 
-        return player;
+        return event;
     }
 
-    public void removePlayer(Long teamId, Long playerId) {
+    public void deleteEvent(Long teamId, Long eventId) {
         teamService.getTeamForCurrentCoach(teamId);
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new EntityNotFoundException("Player not found"));
-        playerRepository.delete(player);
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+        eventRepository.delete(event);
     }
 }

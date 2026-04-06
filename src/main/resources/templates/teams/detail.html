@@ -65,6 +65,64 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Events Section -->
+            <h4 th:text="#{team.events}">Events</h4>
+
+            <form th:action="@{/teams/{id}/events/add(id=${team.id})}" method="post" class="row g-2 mb-3">
+                <div class="col-auto">
+                    <select class="form-select" name="type" required>
+                        <option value="TRAINING" th:text="#{event.type.training}">Training</option>
+                        <option value="MATCH" th:text="#{event.type.match}">Match</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <input type="date" class="form-control" name="date" required>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" name="notes"
+                           th:placeholder="#{event.notes}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn text-white" style="background-color: var(--color-secondary);"
+                            th:text="#{event.add}">Add Event</button>
+                </div>
+            </form>
+
+            <div th:if="${#lists.isEmpty(events)}" class="text-muted mb-3">
+                No events yet.
+            </div>
+
+            <table th:unless="${#lists.isEmpty(events)}" class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th th:text="#{event.type}">Type</th>
+                        <th th:text="#{event.date}">Date</th>
+                        <th th:text="#{event.notes}">Notes</th>
+                        <th th:text="#{common.actions}">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="event : ${events}">
+                        <td>
+                            <span th:if="${event.type.name() == 'TRAINING'}" class="badge"
+                                  style="background-color: var(--color-training); color: var(--color-text);"
+                                  th:text="#{event.type.training}">Training</span>
+                            <span th:if="${event.type.name() == 'MATCH'}" class="badge"
+                                  style="background-color: var(--color-match); color: var(--color-text);"
+                                  th:text="#{event.type.match}">Match</span>
+                        </td>
+                        <td th:text="${event.date}">2024-01-15</td>
+                        <td th:text="${event.notes}">-</td>
+                        <td>
+                            <form th:action="@{/teams/{tid}/events/{eid}/delete(tid=${team.id}, eid=${event.id})}"
+                                  method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>

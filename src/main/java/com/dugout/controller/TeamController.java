@@ -1,6 +1,7 @@
 package com.dugout.controller;
 
 import com.dugout.model.Team;
+import com.dugout.service.EventService;
 import com.dugout.service.PlayerService;
 import com.dugout.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class TeamController {
 
     private final TeamService teamService;
     private final PlayerService playerService;
+    private final EventService eventService;
 
     @GetMapping
     public String list(Model model) {
@@ -42,6 +44,7 @@ public class TeamController {
         Team team = teamService.getTeamForCurrentCoach(id);
         model.addAttribute("team", team);
         model.addAttribute("players", playerService.getActivePlayers(id));
+        model.addAttribute("events", eventService.getEventsForTeam(id));
         return "teams/detail";
     }
 
