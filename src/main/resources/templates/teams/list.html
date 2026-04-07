@@ -5,7 +5,7 @@
     <title th:text="#{team.list} + ' - ' + #{app.name}">My Teams - Dugout</title>
 </head>
 <body>
-    <div th:replace="~{layout/base :: *}">
+    <div th:replace="~{layout/base :: layout(~{::content})}">
         <div th:fragment="content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 th:text="#{team.list}">My Teams</h2>
@@ -37,7 +37,7 @@
                                 <a th:href="@{/teams/{id}/edit(id=${team.id})}"
                                    class="btn btn-sm btn-outline-secondary" th:text="#{team.edit}">Edit</a>
                                 <form th:action="@{/teams/{id}/delete(id=${team.id})}" method="post"
-                                      class="d-inline" th:data-confirm="#{common.confirm}"
+                                      class="d-inline" th:data-confirm="#{common.confirm}">
                                     <button type="submit" class="btn btn-sm btn-outline-danger"
                                             th:text="#{team.delete}">Delete</button>
                                 </form>

@@ -5,7 +5,7 @@
     <title th:text="${team.name} + ' - ' + #{app.name}">Team - Dugout</title>
 </head>
 <body>
-    <div th:replace="~{layout/base :: *}">
+    <div th:replace="~{layout/base :: layout(~{::content})}">
         <div th:fragment="content">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
@@ -150,7 +150,7 @@
                         <td th:text="${player.lastName}">Doe</td>
                         <td>
                             <form th:action="@{/teams/{tid}/players/{pid}/remove(tid=${team.id}, pid=${player.id})}"
-                                  method="post" class="d-inline" th:data-confirm="#{common.confirm}"
+                                  method="post" class="d-inline" th:data-confirm="#{common.confirm}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger"
                                         th:text="#{player.remove}">Remove</button>
                             </form>
@@ -209,7 +209,7 @@
                         <td th:text="${event.notes}">-</td>
                         <td>
                             <form th:action="@{/teams/{tid}/events/{eid}/delete(tid=${team.id}, eid=${event.id})}"
-                                  method="post" class="d-inline" th:data-confirm="#{common.confirm}"
+                                  method="post" class="d-inline" th:data-confirm="#{common.confirm}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
                         </td>
