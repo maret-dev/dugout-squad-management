@@ -12,6 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -51,6 +56,41 @@ public class PlayerService {
         }
 
         return player;
+    }
+
+    public int importPlayersFromCsv(Long teamId, InputStream csvStream) throws IOException {
+        Team team = teamService.getTeamForCurrentCoach(teamId);
+        List<Event> events = eventRepository.findByTeamIdOrderByDateAsc(teamId);
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                String[] parts = line.split(",", 2);
+                if (parts.length < 2) continue;
+                String firstName = parts[0].trim();
+                String lastName = parts[1].trim();
+                if (firstName.isEmpty() || lastName.isEmpty()) continue;
+                Player player = Player.builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .team(team)
+                        .active(true)
+                        .build();
+                player = playerRepository.save(player);
+                for (Event event : events) {
+                    Attendance attendance = Attendance.builder()
+                            .player(player)
+                            .event(event)
+                            .present(false)
+                            .build();
+                    attendanceRepository.save(attendance);
+                }
+                count++;
+            }
+        }
+        return count;
     }
 
     public void removePlayer(Long teamId, Long playerId) {

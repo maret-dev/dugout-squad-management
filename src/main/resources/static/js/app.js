@@ -17,6 +17,40 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Mark All Present per event column
+    document.querySelectorAll('.mark-all-present').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var eventId = btn.getAttribute('data-event');
+            document.querySelectorAll('.attendance-cell[data-event="' + eventId + '"]').forEach(function (cell) {
+                var input = cell.querySelector('input[type="hidden"]');
+                var label = cell.querySelector('.cell-label');
+                if (!input || !label) return;
+                input.value = 'true';
+                label.textContent = 'P';
+                cell.classList.add('cell-present');
+                cell.classList.remove('cell-absent');
+            });
+        });
+    });
+
+    // Mark All Absent per event column
+    document.querySelectorAll('.mark-all-absent').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var eventId = btn.getAttribute('data-event');
+            document.querySelectorAll('.attendance-cell[data-event="' + eventId + '"]').forEach(function (cell) {
+                var input = cell.querySelector('input[type="hidden"]');
+                var label = cell.querySelector('.cell-label');
+                if (!input || !label) return;
+                input.value = 'false';
+                label.textContent = 'A';
+                cell.classList.add('cell-absent');
+                cell.classList.remove('cell-present');
+            });
+        });
+    });
+
     // Flash message auto-dismiss (4 seconds)
     document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
         setTimeout(function () {

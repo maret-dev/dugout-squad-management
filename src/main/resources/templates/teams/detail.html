@@ -31,9 +31,17 @@
                                     <th class="text-start" style="min-width: 150px;">Player</th>
                                     <th th:each="event : ${grid.events}"
                                         th:classappend="${event.type.name() == 'TRAINING'} ? 'header-training' : 'header-match'"
-                                        style="min-width: 45px; font-size: 0.8rem;">
+                                        style="min-width: 55px; font-size: 0.8rem;">
                                         <div th:text="${#temporals.format(event.date, 'dd/MM')}">01/01</div>
                                         <small th:text="${event.type.name() == 'TRAINING'} ? 'T' : 'M'">T</small>
+                                        <div class="mt-1">
+                                            <button type="button" class="btn btn-sm mark-all-present p-0"
+                                                    th:data-event="${event.id}"
+                                                    th:title="#{attendance.markAllPresent}">&#10003;</button>
+                                            <button type="button" class="btn btn-sm mark-all-absent p-0"
+                                                    th:data-event="${event.id}"
+                                                    th:title="#{attendance.markAllAbsent}">&#10007;</button>
+                                        </div>
                                     </th>
                                     <th class="stats-column" th:text="#{stats.trainingAttendance}">Training</th>
                                     <th class="stats-column" th:text="#{stats.trainingPercentage}">Training %</th>
@@ -132,6 +140,20 @@
                 </div>
             </form>
 
+            <form th:action="@{/teams/{id}/players/import-csv(id=${team.id})}" method="post"
+                  enctype="multipart/form-data" class="row g-2 mb-3">
+                <div class="col-auto">
+                    <input type="file" class="form-control" name="csvFile" accept=".csv" required>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-secondary"
+                            th:text="#{player.importCsv}">Import CSV</button>
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <small class="text-muted" th:text="#{player.csvFormat}">Format: firstName,lastName</small>
+                </div>
+            </form>
+
             <div th:if="${#lists.isEmpty(players)}" class="text-muted mb-3">
                 No players yet.
             </div>
@@ -181,6 +203,70 @@
                             th:text="#{event.add}">Add Event</button>
                 </div>
             </form>
+
+            <!-- Bulk Event Creation -->
+            <div class="mb-3">
+                <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#bulkEventForm"
+                        th:text="#{event.bulkAdd}">Bulk Add Events</button>
+                <button class="btn btn-outline-danger btn-sm" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#bulkDeleteForm"
+                        th:text="#{event.bulkDelete}">Bulk Delete Events</button>
+
+                <div class="collapse mt-2" id="bulkEventForm">
+                    <div class="card card-body">
+                        <form th:action="@{/teams/{id}/events/add-bulk(id=${team.id})}" method="post">
+                            <div class="row g-2 mb-2">
+                                <div class="col-auto">
+                                    <label class="form-label" th:text="#{event.startDate}">From</label>
+                                    <input type="date" class="form-control" name="startDate" required>
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label" th:text="#{event.endDate}">To</label>
+                                    <input type="date" class="form-control" name="endDate" required>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-2" th:text="#{event.bulkDayInstructions}">
+                                For each day, choose Training, Match, or skip.
+                            </p>
+                            <div class="row g-2 mb-3">
+                                <div class="col-auto" th:each="day : ${{
+                                    'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'
+                                }}">
+                                    <label class="form-label" th:text="#{'event.day.' + ${day}}">Day</label>
+                                    <select class="form-select form-select-sm" th:name="'day_' + ${day}">
+                                        <option value="" th:text="#{event.daySkip}">-- Skip --</option>
+                                        <option value="TRAINING" th:text="#{event.type.training}">Training</option>
+                                        <option value="MATCH" th:text="#{event.type.match}">Match</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn text-white" style="background-color: var(--color-secondary);"
+                                    th:text="#{event.bulkCreate}">Create Events</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="collapse mt-2" id="bulkDeleteForm">
+                    <div class="card card-body">
+                        <form th:action="@{/teams/{id}/events/delete-bulk(id=${team.id})}" method="post"
+                              th:data-confirm="#{event.bulkDeleteConfirm}">
+                            <div class="row g-2 mb-2">
+                                <div class="col-auto">
+                                    <label class="form-label" th:text="#{event.startDate}">From</label>
+                                    <input type="date" class="form-control" name="startDate" required>
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label" th:text="#{event.endDate}">To</label>
+                                    <input type="date" class="form-control" name="endDate" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-danger"
+                                    th:text="#{event.bulkDelete}">Delete Events in Range</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <div th:if="${#lists.isEmpty(events)}" class="text-muted mb-3">
                 No events yet.

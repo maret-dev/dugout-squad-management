@@ -97,6 +97,28 @@
     opacity: 0.7;
 }
 
+/* Mark all buttons in column headers */
+.mark-all-present,
+.mark-all-absent {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.65rem;
+    line-height: 1;
+}
+
+.mark-all-present:hover {
+    background-color: var(--color-present);
+}
+
+.mark-all-absent:hover {
+    background-color: var(--color-absent);
+}
+
 /* Statistics columns */
 .stats-column {
     font-weight: bold;
