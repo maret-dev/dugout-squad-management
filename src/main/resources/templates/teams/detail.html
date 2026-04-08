@@ -230,9 +230,9 @@
                                 For each day, choose Training, Match, or skip.
                             </p>
                             <div class="row g-2 mb-3">
-                                <div class="col-auto" th:each="day : ${ {'MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'} }">
-                                    <label class="form-label" th:text="${#messages.msg('event.day.' + day)}">Day</label>
-                                    <select class="form-select form-select-sm" th:name="'day_' + ${day}">
+                                <div class="col-auto" th:each="day : ${T(java.time.DayOfWeek).values()}">
+                                    <label class="form-label" th:text="${#messages.msg('event.day.' + day.name())}">Day</label>
+                                    <select class="form-select form-select-sm" th:name="'day_' + ${day.name()}">
                                         <option value="" th:text="#{event.daySkip}">-- Skip --</option>
                                         <option value="TRAINING" th:text="#{event.type.training}">Training</option>
                                         <option value="MATCH" th:text="#{event.type.match}">Match</option>
